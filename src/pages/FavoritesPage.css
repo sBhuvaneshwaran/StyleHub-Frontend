@@ -1,0 +1,182 @@
+/* Favorites Page */
+.fav-page {
+    padding: 2rem 1rem 4rem;
+}
+
+.fav-container {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.fav-header {
+    margin-bottom: 1.5rem;
+}
+
+.fav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.fav-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+}
+
+.fav-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.fav-image-wrap {
+    position: relative;
+    aspect-ratio: 3/4;
+    display: block;
+    overflow: hidden;
+}
+
+.fav-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+}
+
+.fav-card:hover .fav-image {
+    transform: scale(1.05);
+}
+
+.fav-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--primary);
+    color: white;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 50px;
+    text-transform: uppercase;
+}
+
+.fav-info {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+}
+
+.fav-category {
+    font-size: 0.72rem;
+    color: var(--primary);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.fav-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.fav-name:hover {
+    color: var(--primary);
+}
+
+.fav-pricing {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.fav-price {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.fav-original {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-decoration: line-through;
+}
+
+.fav-discount {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.fav-colors {
+    display: flex;
+    gap: 5px;
+    margin-top: 2px;
+}
+
+.fav-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.fav-cart-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.fav-cart-btn:hover {
+    background: var(--primary-dark);
+}
+
+.fav-remove-btn {
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    background: white;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.fav-remove-btn:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+@media (max-width: 480px) {
+    .fav-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+}

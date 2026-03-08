@@ -1,0 +1,214 @@
+.footer {
+    background: linear-gradient(135deg, hsl(240, 30%, 10%), hsl(240, 25%, 14%));
+    color: rgba(255, 255, 255, 0.8);
+    padding: 4rem 1.5rem 0;
+    margin-top: 4rem;
+}
+
+.footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Brand */
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: white;
+    text-decoration: none;
+    margin-bottom: 1rem;
+}
+
+.footer-logo span:first-child {
+    font-size: 1.6rem;
+}
+
+.footer-tagline {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.7;
+    max-width: 280px;
+    margin-bottom: 1.5rem;
+}
+
+.footer-socials {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.footer-socials a {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 0.25s;
+}
+
+.footer-socials a:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    transform: translateY(-3px);
+}
+
+/* Columns */
+.footer-col h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1.25rem;
+}
+
+.footer-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.footer-col ul li a,
+.footer-col ul li span {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-col ul li a:hover {
+    color: white;
+}
+
+/* Contact */
+.footer-contact li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.88rem;
+}
+
+.footer-contact li svg {
+    flex-shrink: 0;
+    margin-top: 3px;
+    color: var(--primary);
+}
+
+/* Platforms */
+.footer-platforms {
+    margin-top: 1.5rem;
+}
+
+.footer-platforms p {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.platform-badges {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.platform-badge {
+    padding: 0.3rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.platform-badge.flipkart {
+    background: rgba(255, 103, 0, 0.15);
+    color: #ff9955;
+    border: 1px solid rgba(255, 103, 0, 0.3);
+}
+
+.platform-badge.flipkart:hover {
+    background: #ff6700;
+    color: white;
+}
+
+.platform-badge.amazon {
+    background: rgba(255, 153, 0, 0.12);
+    color: #ffc55a;
+    border: 1px solid rgba(255, 153, 0, 0.3);
+}
+
+.platform-badge.amazon:hover {
+    background: #ff9900;
+    color: white;
+}
+
+/* Bottom bar */
+.footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.footer-bottom p {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.footer-legal {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-legal a {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.35);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-legal a:hover {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .footer-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .footer-brand {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 550px) {
+    .footer-inner {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+}

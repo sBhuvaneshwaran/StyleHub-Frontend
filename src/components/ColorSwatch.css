@@ -1,0 +1,27 @@
+.color-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0.5rem 0;
+}
+
+.swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2.5px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.12);
+    outline: none;
+    padding: 0;
+}
+
+.swatch:hover {
+    transform: scale(1.15);
+}
+
+.swatch-selected {
+    box-shadow: 0 0 0 2.5px var(--primary);
+    transform: scale(1.15);
+}
