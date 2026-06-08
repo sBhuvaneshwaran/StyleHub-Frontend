@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import api from "../utils/api";
+import { setStatus } from "../utils/backendStatus";
+import fallbackProducts from "../data/products";
 
 const ProductContext = createContext();
 
@@ -21,13 +23,26 @@ export const ProductProvider = ({ children }) => {
         return `${backendHost}${cleanPath}`;
     };
 
+    const deriveCategoriesFromFallback = () => {
+        const names = Array.from(new Set(fallbackProducts.map(p => p.category))).filter(Boolean);
+        return names.map((n, i) => ({ id: i + 1, name: n }));
+    };
+
     const fetchCategories = async () => {
         try {
             const res = await api.get("/api/store/categories/");
             const raw = Array.isArray(res.data) ? res.data : (res.data.results || []);
             setCategories(raw);
         } catch (err) {
-            console.error("[Products] fetchCategories error:", err.message);
+            const status = err.response?.status;
+            if (status >= 500 || !err.response) {
+                setStatus('down');
+                console.warn('[Products] fetchCategories: backend error (500 or network)');
+            } else {
+                console.warn('[Products] fetchCategories error:', err.response?.data || err.message);
+            }
+            // Fallback to local data so the UI remains usable when backend is down
+            setCategories(deriveCategoriesFromFallback());
         }
     };
 
@@ -37,7 +52,21 @@ export const ProductProvider = ({ children }) => {
             const raw = Array.isArray(res.data) ? res.data : (res.data.results || []);
             setSizes(raw);
         } catch (err) {
-            console.error("[Products] fetchAllSizes error:", err.message);
+            const status = err.response?.status;
+            if (status >= 500 || !err.response) {
+                setStatus('down');
+                console.warn('[Products] fetchAllSizes: backend error (500 or network)');
+            } else {
+                console.warn('[Products] fetchAllSizes error:', err.response?.data || err.message);
+            }
+            // Basic fallback sizes for development/frontend when backend sizes endpoint fails
+            const defaultSizes = [
+                { id: 1, name: "S" },
+                { id: 2, name: "M" },
+                { id: 3, name: "L" },
+                { id: 4, name: "XL" },
+            ];
+            setSizes(defaultSizes);
         }
     };
 
@@ -75,7 +104,20 @@ export const ProductProvider = ({ children }) => {
             const raw = Array.isArray(res.data) ? res.data : (res.data.results || []);
             setProducts(raw.map(normalize));
         } catch (err) {
-            console.error("[Products] fetchProducts error:", err.message);
+            const status = err.response?.status;
+            if (status >= 500 || !err.response) {
+                setStatus('down');
+                console.warn('[Products] fetchProducts: backend error (500 or network)');
+            } else {
+                console.warn('[Products] fetchProducts error:', err.response?.data || err.message);
+            }
+            // Use local fallback products so the UI can render while backend is returning 5xx
+            try {
+                setProducts(fallbackProducts.map(normalize));
+            } catch (inner) {
+                console.error("[Products] fallback normalize error:", inner.message);
+                setProducts([]);
+            }
         } finally {
             setLoading(false);
         }

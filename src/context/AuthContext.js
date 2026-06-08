@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import api from "../utils/api";
+import { setStatus } from "../utils/backendStatus";
 
 const AuthContext = createContext();
 
@@ -73,8 +74,6 @@ export const AuthProvider = ({ children }) => {
             const status = error.response?.status;
 
             // Django 400: wrong credentials or validation error
-            // DRF returns: { "non_field_errors": ["Unable to log in..."] }
-            // or:          { "username": ["..."] }
             if (status === 400 || status === 401) {
                 const msg =
                     data?.non_field_errors?.[0] ||
@@ -83,6 +82,20 @@ export const AuthProvider = ({ children }) => {
                     data?.password?.[0] ||
                     "Invalid credentials. Please check your username and password.";
                 return { success: false, message: msg };
+            }
+
+            // Server-side error: provide clearer message and optional local fallback for dev
+            if (status >= 500) {
+                setStatus('down');
+                console.warn("[Auth] Login server error: 500 or network");
+                if (process.env.REACT_APP_LOCAL_AUTH_FALLBACK === 'true') {
+                    const mockToken = 'local-dev-token';
+                    localStorage.setItem('clothesShopToken', mockToken);
+                    const mockUser = { id: 0, username: credential, email: credential, role: 'customer' };
+                    setUser(mockUser);
+                    return { success: true, user: mockUser, fallback: true };
+                }
+                return { success: false, message: 'Server error (500). Please try again later.' };
             }
 
             console.error("[Auth] Login error:", data || error.message);
@@ -110,6 +123,21 @@ export const AuthProvider = ({ children }) => {
             return { success: true, user: finalUser };
         } catch (error) {
             const data = error.response?.data;
+            const status = error.response?.status;
+
+            if (status >= 500) {
+                setStatus('down');
+                console.warn("[Auth] Signup server error: 500 or network");
+                if (process.env.REACT_APP_LOCAL_AUTH_FALLBACK === 'true') {
+                    const mockToken = 'local-dev-token';
+                    localStorage.setItem('clothesShopToken', mockToken);
+                    const mockUser = { id: 0, username, email, role: 'customer' };
+                    setUser(mockUser);
+                    return { success: true, user: mockUser, fallback: true };
+                }
+                return { success: false, message: 'Server error (500). Please try again later.' };
+            }
+
             let msg = "Signup failed.";
             if (data) {
                 msg = Object.entries(data)

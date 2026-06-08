@@ -5,6 +5,7 @@ import { CartProvider } from "./context/CartContext";
 import { ProductProvider } from "./context/ProductContext";
 import { AddressProvider } from "./context/AddressContext";
 import Navbar from "./components/Navbar";
+import ServerStatusBanner from "./components/ServerStatusBanner";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
@@ -26,6 +27,7 @@ function App() {
           <CartProvider>
             <AddressProvider>
               <Navbar />
+              <ServerStatusBanner />
               <main>
                 <OrderProvider>
                   <Routes>
