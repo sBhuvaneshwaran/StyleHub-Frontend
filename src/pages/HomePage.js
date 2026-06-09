@@ -16,24 +16,66 @@ const HomePage = () => {
 
     const filtered = useMemo(() => {
         let list = [...products];
+
+        // Category Filter
         if (activeCategory !== "All") {
-            const target = activeCategory.trim().toLowerCase();
             list = list.filter((p) => {
-                const catName = (p.category_name || p.category || "").toString().trim().toLowerCase();
-                return catName === target;
+                const categoryName =
+                    p.category_name ||
+                    p.category?.name ||
+                    "";
+
+                console.log(
+                    "Selected:",
+                    activeCategory,
+                    "Product:",
+                    p.name,
+                    "Category:",
+                    categoryName
+                );
+
+                return (
+                    categoryName.toLowerCase().trim() ===
+                    activeCategory.toLowerCase().trim()
+                );
             });
         }
+
+        // Search Filter
         if (search.trim()) {
-            const q = search.trim().toLowerCase();
+            const q = search.toLowerCase().trim();
+
             list = list.filter((p) => {
-                const nameMatch = (p.name || "").toLowerCase().includes(q);
-                const catMatch = (p.category_name || p.category || "").toString().toLowerCase().includes(q);
-                return nameMatch || catMatch;
+                const categoryName =
+                    p.category_name ||
+                    p.category?.name ||
+                    (typeof p.category === "string" ? p.category : "");
+
+                return (
+                    (p.name || "").toLowerCase().includes(q) ||
+                    (categoryName || "").toLowerCase().includes(q)
+                );
             });
         }
-        if (sortBy === "price-asc") list.sort((a, b) => a.price - b.price);
-        if (sortBy === "price-desc") list.sort((a, b) => b.price - a.price);
-        if (sortBy === "rating") list.sort((a, b) => b.rating - a.rating);
+
+        // Sorting
+        switch (sortBy) {
+            case "price-asc":
+                list.sort((a, b) => Number(a.price) - Number(b.price));
+                break;
+
+            case "price-desc":
+                list.sort((a, b) => Number(b.price) - Number(a.price));
+                break;
+
+            case "rating":
+                list.sort((a, b) => Number(b.rating) - Number(a.rating));
+                break;
+
+            default:
+                break;
+        }
+
         return list;
     }, [products, activeCategory, search, sortBy]);
 

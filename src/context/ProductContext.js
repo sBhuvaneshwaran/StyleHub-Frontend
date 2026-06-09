@@ -123,38 +123,53 @@ export const ProductProvider = ({ children }) => {
     /* ---------------------------
        NORMALIZE PRODUCT
     ----------------------------*/
-    const normalize = (p) => {
-        const placeholder =
-            "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=500&q=80";
+const normalize = (p) => {
+    const placeholder =
+        "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=500&q=80";
 
         const rawImages = p.images || [];
 
         const images = rawImages.map((img) => ({
-            image: ensureAbsoluteUrl(img.image || img),
+          image: ensureAbsoluteUrl(img.image || img),
         }));
 
         const mainImage =
             ensureAbsoluteUrl(p.image || images?.[0]?.image) || placeholder;
 
-        return {
-            ...p,
-            image: mainImage,
-            images: images.length ? images : [{ image: mainImage }],
+            return {
+                ...p,
 
-            price: Number(p.price || 0),
-            originalPrice: Number(p.original_price || p.originalPrice || 0),
+                image: mainImage,
 
-            rating: Number(p.rating || 0),
-            reviews: Number(p.reviews || 0),
+                images: images.length
+                    ? images
+                    : [{ image: mainImage }],
 
-            category_name:
-                typeof p.category === "string"
-                    ? p.category
-                    : p.category?.name || "",
+                price: Number(p.price || 0),
 
-            sizes: p.sizes || [],
-        };
-    };
+                originalPrice: Number(
+                    p.original_price ||
+                    p.originalPrice ||
+                    0
+                ),
+
+                rating: Number(p.rating || 0),
+
+                reviews: Number(p.reviews || 0),
+
+                // FIXED CATEGORY
+                category_name:
+                    p.category_name ||
+                    p.category?.name ||
+                    (typeof p.category === "string"
+                        ? p.category
+                        : ""),
+
+                sizes: Array.isArray(p.sizes)
+                    ? p.sizes
+                    : [],
+            };
+};
 
     /* ---------------------------
        FETCH PRODUCTS
