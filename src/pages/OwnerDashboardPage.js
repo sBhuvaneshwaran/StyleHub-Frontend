@@ -23,6 +23,8 @@ const PRESET_COLORS = [
     { hex: "#4B0082", name: "Indigo" },
 ];
 
+const PRESET_SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+
 const emptyForm = {
     name: "",
     category: "",
@@ -74,7 +76,9 @@ const OwnerDashboardPage = () => {
             colors: p.colors || [],
             colorNames: (p.colors || []).map(c => c.name),
             sizes: p.sizes || [],
-            sizeIds: (p.sizes || []).map(s => s.id),
+            sizeIds: (p.sizes || [])
+                .map(s => typeof s === "object" ? s.id : s)
+                .filter(Boolean),
             images: p.images?.length > 0 ? p.images.map(img => img.image || img) : [""],
             flipkart: p.flipkart || "",
             amazon: p.amazon || "",
@@ -250,31 +254,38 @@ const OwnerDashboardPage = () => {
                             {/* Sizes */}
                             <div className="form-group">
                                 <label>Available Sizes *</label>
+
                                 <div className="cat-chips">
-                                    {sizes.map((s) => (
-                                        <button
-                                            key={s.id}
-                                            type="button"
-                                            className={`chip ${form.sizeIds.includes(s.id) ? "chip-active" : ""}`}
-                                            onClick={() => {
-                                                const exists = form.sizeIds.includes(s.id);
-                                                if (exists) {
-                                                    const newIds = form.sizeIds.filter(id => id !== s.id);
-                                                    const newSizes = form.sizes.filter(sz => sz.id !== s.id);
-                                                    setForm({ ...form, sizeIds: newIds, sizes: newSizes });
-                                                } else {
-                                                    setForm({
-                                                        ...form,
-                                                        sizeIds: [...form.sizeIds, s.id],
-                                                        sizes: [...form.sizes, s]
-                                                    });
-                                                }
-                                            }}
-                                        >
-                                            {s.name}
-                                        </button>
-                                    ))}
+                                    {sizes.map((s) => {
+                                        const isSelected = form.sizeIds.includes(s.id);
+
+                                        return (
+                                            <button
+                                                key={s.id}
+                                                type="button"
+                                                className={`chip ${isSelected ? "chip-active" : ""}`}
+                                                onClick={() => {
+                                                    if (isSelected) {
+                                                        setForm((prev) => ({
+                                                            ...prev,
+                                                            sizeIds: prev.sizeIds.filter(id => id !== s.id),
+                                                            sizes: prev.sizes.filter(sz => sz.id !== s.id),
+                                                        }));
+                                                    } else {
+                                                        setForm((prev) => ({
+                                                            ...prev,
+                                                            sizeIds: [...prev.sizeIds, s.id],
+                                                            sizes: [...prev.sizes, s],
+                                                        }));
+                                                    }
+                                                }}
+                                            >
+                                                {s.name}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
+
                                 {form.sizes.length > 0 && (
                                     <div className="selected-colors-label">
                                         Selected: {form.sizes.map(s => s.name).join(", ")}

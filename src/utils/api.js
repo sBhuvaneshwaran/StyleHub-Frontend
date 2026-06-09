@@ -2,7 +2,8 @@ import axios from 'axios';
 import { setStatus } from './backendStatus';
 
 // Django backend base URL — change port if your Django server uses a different port
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// Default to 127.0.0.1 which is explicitly the local host IP
+const API_BASE_URL = (process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000').replace(/\/+$/, '');
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -76,3 +77,8 @@ api.interceptors.response.use((res) => {
 }, (err) => Promise.reject(err));
 
 export default api;
+
+// Explicit full endpoints (use these to ensure local dev endpoints are always targeted)
+export const CATEGORIES_URL = `${API_BASE_URL}/api/store/categories/`;
+export const SIZES_URL = `${API_BASE_URL}/api/store/sizes/`;
+export const PRODUCTS_URL = `${API_BASE_URL}/api/store/products/`;

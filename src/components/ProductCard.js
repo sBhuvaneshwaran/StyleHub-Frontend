@@ -44,14 +44,18 @@ const ProductCard = ({ product }) => {
                     <h3 className="card-name">{product.name}</h3>
                 </Link>
                 <div className="product-swatches">
-                    {product.colors && product.colors.map((c, i) => (
-                        <span
-                            key={i}
-                            className="swatch"
-                            style={{ backgroundColor: c.name }}
-                            title={c.name}
-                        />
-                    ))}
+                    {product.colors && product.colors.map((c, i) => {
+                        const colorValue = typeof c === 'string' ? c : (c.hex || c.hex_code || c.name || '#ccc');
+                        const title = typeof c === 'string' ? c : (c.name || colorValue);
+                        return (
+                            <span
+                                key={i}
+                                className="swatch"
+                                style={{ backgroundColor: colorValue }}
+                                title={title}
+                            />
+                        );
+                    })}
                     {product.sizes && product.sizes.length > 0 && (
                         <div className="card-sizes">
                             {product.sizes.map((s, i) => (

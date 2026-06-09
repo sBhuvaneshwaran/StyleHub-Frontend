@@ -11,7 +11,14 @@ const LoginPage = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    if (user) return <Navigate to={user.role === "owner" ? "/dashboard" : "/"} replace />;
+    // If the auth state changes (e.g. login completes) navigate accordingly.
+    React.useEffect(() => {
+        if (!user) return;
+        const isOwner = user?.is_shop_owner || (user?.role && user.role.toLowerCase() === 'owner');
+        const target = isOwner ? "/dashboard" : "/";
+        console.debug('[LoginPage] user changed, navigating to', target, 'user:', user);
+        navigate(target, { replace: true });
+    }, [user, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,11 +33,20 @@ const LoginPage = () => {
         }
 
         setLoading(false);
+        console.debug("Login result:", result);
         if (result.success) {
-            const serverRole = result.user?.role || "customer";
-            navigate(serverRole === "owner" ? "/dashboard" : "/");
+            const ownerEnvUser = process.env.REACT_APP_OWNER_USERNAME;
+            const ownerEnvPass = process.env.REACT_APP_OWNER_PASSWORD;
+            const usedDefaultAdmin = ownerEnvUser && ownerEnvPass && form.username.trim() === ownerEnvUser && form.password === ownerEnvPass;
+
+            const redirectTo = result.redirect || (result.user?.role === "owner" ? "/dashboard" : "/");
+            if (usedDefaultAdmin) {
+                navigate("/dashboard", { replace: true });
+            } else {
+                navigate(redirectTo, { replace: true });
+            }
         } else {
-            setError(result.message);
+            setError(result.message || "Login failed");
         }
     };
 

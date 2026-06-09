@@ -70,9 +70,12 @@ const ProductDetailPage = () => {
                     <div className="detail-gallery">
                         <div className="main-image-wrap">
                             <img
-                                src={getProductImage(currentImg)}
+                                src={getProductImage(currentImg) || "/placeholder.png"}
                                 alt={product.name}
                                 className="main-image"
+                                onError={(e) => {
+                                    e.target.src = "/placeholder.png";
+                                }}
                             />
                             {product.badge && (
                                 <span className="detail-badge">{product.badge}</span>
@@ -139,11 +142,11 @@ const ProductDetailPage = () => {
                                 </span>
                             </div>
                             <ColorSwatch
-                                colors={product.colors?.map(c => c.name) || []}
-                                colorNames={product.colors?.map(c => c.name) || []}
-                                selected={selectedColorName || product.colors?.[0]?.name}
+                                colors={product.colors?.map(c => (typeof c === 'string' ? c : (c.hex || c.hex_code || c.name))) || []}
+                                colorNames={product.colors?.map(c => (typeof c === 'string' ? c : (c.name || c.hex || c.hex_code))) || []}
+                                selected={selectedColorName || (typeof product.colors?.[0] === 'string' ? product.colors?.[0] : product.colors?.[0]?.name)}
                                 onSelect={(cName) => {
-                                    const cObj = product.colors.find(c => c.name === cName);
+                                    const cObj = product.colors.find(c => (typeof c === 'string' ? c === cName : (c.name === cName || c.hex === cName || c.hex_code === cName)));
                                     setSelectedColor(cObj);
                                     setSelectedColorName(cName);
                                 }}
