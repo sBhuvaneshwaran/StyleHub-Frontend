@@ -256,45 +256,67 @@ export const ProductProvider = ({ children }) => {
     /* ---------------------------
        UPDATE PRODUCT
     ----------------------------*/
-    const updateProduct = async (id, product) => {
+    const updateProduct = async (productId, product) => {
         try {
-            const categoryObj = categories.find(
-                (c) =>
-                    c.name?.toLowerCase() ===
-                    product.category?.toLowerCase()
+            const categoryName =
+                typeof product.category === "string"
+                    ? product.category
+                    : product.category?.name || "";
+
+            const catObj = categories.find(
+                c =>
+                    (c.name || "").toString().toLowerCase().trim() ===
+                    categoryName.toString().toLowerCase().trim()
             );
 
             const payload = {
                 name: product.name,
-                slug: `${toSlug(product.name)}-${Date.now()}`,
-                category: categoryObj?.id,
+                slug: toSlug(product.name),
+
+                category: catObj?.id,
+
                 price: product.price,
-                original_price: product.originalPrice,
+
+                original_price:
+                    product.originalPrice ||
+                    product.original_price,
+
                 description: product.description,
 
-                images: (product.images || []).map((img) => ({
+                short_description:
+                    product.description?.substring(0, 150) ||
+                    product.name,
+
+                colors: (product.colors || []).map(c => ({
+                    name: c.name,
+                    hex_code: c.hex || c.hex_code
+                })),
+
+                sizes:
+                    product.sizeIds ||
+                    product.sizes?.map(s => s.id) ||
+                    [],
+
+                images: (product.images || []).map(img => ({
                     image:
                         typeof img === "string"
                             ? img
-                            : img.image,
-                })),
-
-                colors: (product.colors || []).map((c) => ({
-                    name: c.name,
-                    hex_code: c.hex || c.hex_code,
-                })),
-
-                sizes: (product.sizeIds || []).filter(Boolean),
+                            : img.image
+                }))
             };
 
+            console.log("[UPDATE PAYLOAD]", payload);
+
             const res = await api.patch(
-                `${PRODUCTS_URL}${id}/`,
+                `${PRODUCTS_URL}${productId}/`,
                 payload
             );
 
-            setProducts((prev) =>
-                prev.map((p) =>
-                    p.id === id ? normalize(res.data) : p
+            setProducts(prev =>
+                prev.map(p =>
+                    p.id === productId
+                        ? normalize(res.data)
+                        : p
                 )
             );
 
@@ -304,6 +326,7 @@ export const ProductProvider = ({ children }) => {
                 "[UPDATE PRODUCT ERROR]",
                 err.response?.data || err.message
             );
+
             return false;
         }
     };
